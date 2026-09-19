@@ -1,0 +1,122 @@
+---
+import '../styles/global.css';
+import '../styles/callout.css';
+import { siteConfig } from '../config';
+import { ClientRouter } from 'astro:transitions';
+import BackToTop from '../components/BackToTop.astro';
+import CodeBlockCopy from '../components/CodeBlockCopy.astro';
+import Lightbox from '../components/Lightbox.astro';
+import SearchModal from '../components/SearchModal.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  noindex?: boolean;
+  article?: {
+    headline: string;
+    publishedTime: Date;
+    modifiedTime?: Date;
+    tags?: string[];
+  };
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  canonical,
+  noindex = false,
+  article,
+} = Astro.props;
+
+const pageUrl = new URL(canonical || Astro.url.pathname, siteConfig.site).href;
+const socialImage = new URL('/logo-full.svg', siteConfig.site).href;
+const jsonLd = article
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: article.headline,
+      description,
+      url: pageUrl,
+      datePublished: article.publishedTime.toISOString(),
+      dateModified: (article.modifiedTime || article.publishedTime).toISOString(),
+      author: { '@type': 'Person', name: siteConfig.author },
+      publisher: { '@type': 'Organization', name: siteConfig.title, url: siteConfig.site },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+      keywords: article.tags?.join(', '),
+      inLanguage: siteConfig.lang,
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: siteConfig.title,
+      description: siteConfig.description,
+      url: siteConfig.site,
+      inLanguage: siteConfig.lang,
+      publisher: { '@type': 'Organization', name: siteConfig.title },
+    };
+
+const jsonLdString = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
+---
+
+<!DOCTYPE html>
+<html lang={siteConfig.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="author" content={siteConfig.author} />
+    <link rel="canonical" href={pageUrl} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    {article && <meta property="article:published_time" content={article.publishedTime.toISOString()} />}
+    {article?.modifiedTime && <meta property="article:modified_time" content={article.modifiedTime.toISOString()} />}
+    {article?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+    <script type="application/ld+json" is:inline set:html={jsonLdString} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    {siteConfig.features?.rss && (
+      <link rel="alternate" type="application/rss+xml" title={siteConfig.title + ' RSS'} href="/rss.xml" />
+    )}
+
+    <ClientRouter />
+
+    {/* Theme detection script - runs before paint to prevent flash */}
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('theme') || 'auto';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const effectiveTheme = saved === 'auto' ? (prefersDark ? 'dark' : 'light') : saved;
+        document.documentElement.setAttribute('data-theme', saved);
+        document.documentElement.classList.add(effectiveTheme);
+      })();
+
+      // Re-apply theme after View Transitions swap (before page is visible)
+      document.addEventListener('astro:after-swap', () => {
+        const saved = localStorage.getItem('theme') || 'auto';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const effectiveTheme = saved === 'auto' ? (prefersDark ? 'dark' : 'light') : saved;
+        document.documentElement.setAttribute('data-theme', saved);
+        document.documentElement.classList.remove('dark', 'light');
+        document.documentElement.classList.add(effectiveTheme);
+      });
+    </script>
+  </head>
+  <body>
+    <slot />
+    {siteConfig.features?.backToTop && <BackToTop />}
+    <CodeBlockCopy />
+    {siteConfig.features?.lightbox && <Lightbox />}
+    {siteConfig.features?.search && <SearchModal />}
+  </body>
+</html>

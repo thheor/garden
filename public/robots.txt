@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://belajar-jarkom.netlify.app/sitemap.xml
