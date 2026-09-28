@@ -12,7 +12,7 @@ export const siteConfig = {
   description: "This is where I planted all the interseting things rattling around in my head before they disappear. Second brain, digital garden, open scratchpad, whatever the label, it's where my ideas get room to breathe.",
 
   // Author name — used in footer and meta author tag
-  author: "Lukman",
+  author: "Lukman Prasetyo",
 
   // Site URL — set before deployment (e.g., https://example.com)
   // Used for RSS feed and SEO

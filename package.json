@@ -1,23 +1,19 @@
 {
-  "name": "capsule-x",
+  "name": "garden",
   "type": "module",
   "version": "0.0.1",
-  "description": "A minimal, modern blog theme for Astro with capsule floating navigation",
-  "author": "wangjacks",
+  "description": "A minimal blog site created to stores all of interesting things.",
+  "author": "thheor",
   "license": "Apache-2.0",
   "keywords": [
     "astro",
-    "astro-theme",
     "blog",
-    "blog-theme",
-    "minimal",
-    "capsule",
-    "dark-mode"
+    "personal"
   ],
-  "homepage": "https://capsule-x-brown.vercel.app",
+  "homepage": "https://garden.lukmanp.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wangjacks/capsule-x.git"
+    "url": "https://github.com/thheor/garden.git"
   },
   "engines": {
     "node": ">=22.12.0"
