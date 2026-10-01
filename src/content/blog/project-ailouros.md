@@ -27,6 +27,8 @@ Kenalin proyek ini: **Project Bastet (atau sebut saja: _FelisLink_)**.
 
 ### Cara Kerjanya: Nggak Perlu Dibor, Nggak Pakai Sakit!
 
+![Project image](/images/cat-with-helmet.png)
+
 Banyak orang mikir, _"Hah, baca otak kucing? Emang kepala kucingnya mau dibor kayak Frankenstein?"_  
 Jawabannya: **Nggak sama sekali.**
 
